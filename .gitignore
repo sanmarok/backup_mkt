@@ -1,0 +1,23 @@
+# Ignorar directorios del entorno virtual
+bin/
+include/
+lib/
+lib64
+pyvenv.cfg
+
+# Ignorar archivos compilados de Python (se generan automáticamente)
+__pycache__/
+*.pyc
+
+# Archivos de sistema o temporales (opcional pero recomendado)
+.DS_Store
+
+# Ignorar archivos de configuración del editor (opcional)
+.vscode/
+.idea/
+*.swp
+*.swo   
+
+#Archivos sensibles
+env.py
+backups
