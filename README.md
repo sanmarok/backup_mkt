@@ -1,4 +1,4 @@
-# Mikrotik Backup Automator 🤖
+# Mikrotik Backup Automator
 
 Script automatizado en Python para realizar backups (Binarios y Exports) de routers Mikrotik y enviarlos a un servidor seguro vía SFTP/SSH. Incluye reportes automáticos a Telegram.
 
