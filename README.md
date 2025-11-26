@@ -13,8 +13,8 @@ Script automatizado en Python para realizar backups (Binarios y Exports) de rout
 
 1. Clonar el repositorio:
    ```bash
-   git clone [https://github.com/TU_USUARIO/TU_REPO.git](https://github.com/TU_USUARIO/TU_REPO.git)
-   cd TU_REPO
+   git clone https://github.com/sanmarok/backup_mkt
+   cd backup_mkt
     ```
     ```bash
     chmod +x setup.sh
