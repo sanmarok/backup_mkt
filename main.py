@@ -2,8 +2,13 @@
 import os
 import env
 import requests
+import shutil
+import time
 from datetime import datetime
 from netmiko import ConnectHandler
+
+# --- CONFIGURACIÓN DE RETENCIÓN ---
+RETENTION_DAYS = 90  # 6 meses aprox
 
 def send_telegram_report(lines):
     """Envía el resumen final a Telegram"""
@@ -28,6 +33,45 @@ def send_telegram_report(lines):
         print("✅ Reporte enviado correctamente.")
     except Exception as e:
         print(f"❌ Error enviando telegram: {e}")
+
+def cleanup_old_backups(dev_name):
+    """Borra carpetas de backup antiguas de este equipo"""
+    device_backup_dir = os.path.join(env.BACKUP_ROOT_DIR, dev_name)
+    
+    if not os.path.exists(device_backup_dir):
+        return
+
+    print(f"🧹 Verificando backups antiguos de {dev_name} (> {RETENTION_DAYS} días)...")
+    
+    # Tiempo actual en segundos
+    now = time.time()
+    # Tiempo límite: Días * 24h * 60m * 60s
+    cutoff = now - (RETENTION_DAYS * 86400)
+    
+    deleted_count = 0
+
+    try:
+        # Listamos todo lo que hay en la carpeta del equipo
+        for item in os.listdir(device_backup_dir):
+            item_path = os.path.join(device_backup_dir, item)
+            
+            # Solo nos interesan los directorios
+            if os.path.isdir(item_path):
+                # Obtenemos la fecha de modificación de la carpeta
+                folder_mtime = os.path.getmtime(item_path)
+                
+                if folder_mtime < cutoff:
+                    print(f"   🗑️ Borrando antiguo: {item}")
+                    shutil.rmtree(item_path) # Borrado recursivo
+                    deleted_count += 1
+        
+        if deleted_count > 0:
+            print(f"   -> Se eliminaron {deleted_count} backups antiguos.")
+        else:
+            print("   -> Todo limpio. No hay backups caducados.")
+            
+    except Exception as e:
+        print(f"⚠️ Error intentando limpiar backups antiguos: {e}")
 
 def backup_device(device):
     dev_name = device['name']
@@ -85,6 +129,10 @@ def backup_device(device):
         
         net_connect.disconnect()
         print("🔌 Desconectado.")
+        
+        # --- NUEVA FUNCIONALIDAD: LIMPIEZA LOCAL ---
+        cleanup_old_backups(dev_name)
+        # -------------------------------------------
         
         print(f"✅ ÉXITO: {dev_name} respaldado correctamente.")
         return f"*{dev_name}* ✅"
