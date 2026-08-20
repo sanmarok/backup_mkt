@@ -1,4 +1,4 @@
-#!/etc/dev/backup/bin/python3
+#!/home/maokata/projects/backup/bin/python3
 import os
 import env
 import requests
@@ -8,7 +8,7 @@ from datetime import datetime
 from netmiko import ConnectHandler
 
 # --- CONFIGURACIÓN DE RETENCIÓN ---
-RETENTION_DAYS = 90  # 6 meses aprox
+RETENTION_DAYS = 30  # 1 mes
 
 def send_telegram_report(lines):
     """Envía el resumen final a Telegram"""
